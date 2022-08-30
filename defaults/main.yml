@@ -1,0 +1,5 @@
+---
+cloudinit_rendering: "container"
+alias: "22.04"
+profiles: "default"
+...

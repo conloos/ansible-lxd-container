@@ -1,0 +1,35 @@
+---
+- name: start Cloudinit
+  ansible.builtin.include_role:
+    name: cloud-init
+
+- name: create container
+  lxd_container:
+    name: "{{ item }}"
+    state: started
+    source:
+      type: image
+      mode: pull
+      server: https://cloud-images.ubuntu.com/releases
+      protocol: simplestreams
+      alias: "{{ lxd_cloudimage_alias }}"
+    profiles: "{{ lxd_cloudimage_profiles }}"
+    wait_for_ipv4_addresses: True
+    # The cloud-init role creates a nested-dict() for the preconfiguration of the container (see role:cloud-init).
+    # To extend this dict() the ansible-combine() must be used.
+    # I suggest to use additional_container_config_values{} in the vars section to store additional paremeters. 
+    config: "{{ cloudinit_config | combine( additional_container_config_values | default({}) ) }}"
+  register: state
+  with_items:
+    - "{{ cloudinit_fqdn.split('.')[0] }}"
+  delegate_to: "{{ host }}"
+
+# Wait till ssh is up to continue
+- name: Wait 300 seconds for port 22 to become open and contain "OpenSSH"
+  ansible.builtin.wait_for:
+    host: '{{ cloudinit_fqdn }}'
+    port: 22
+    delay: 60
+    timeout: 300
+  delegate_to: localhost
+...
