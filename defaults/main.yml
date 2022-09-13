@@ -1,5 +1,5 @@
 ---
-cloudinit_rendering: "container"
+cloudinit_rendering: "var"
 alias: "22.04"
 profiles: "default"
 ...

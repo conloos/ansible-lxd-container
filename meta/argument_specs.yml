@@ -2,19 +2,22 @@ argument_specs:
   main:
     # https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html#role-argument-validation
     # https://docs.ansible.com/ansible/latest/dev_guide/developing_program_flow_modules.html#argument-spec
-    short_description: Create LXD Container.
-    description: Create LXD Container.
+    short_description: Role for create LXD Container.
+    description: Role for create LXD Container.
     author:
       - Frank Dornheim
     options:
       cloudinit_fqdn:
         type: str
-        default: "{{ hostvars['localhost']['cloudinit_fqdn'] }}"
+        required: true
         description: FQDN of the system.
       cloudinit_rendering:
         type: str
-        default: "container"
-        description: "Selection of how cloudinit should prepare the data. For more information about the rendering variants, please consult the documentation of the cloudinit role."
+        default: "var"
+        description:
+          "Selection of how cloudinit should prepare the data.
+          For more information about the rendering variants,
+          please consult the documentation of the cloudinit role."
       alias:
         type: str
         default: "22.04"
@@ -26,4 +29,5 @@ argument_specs:
       host:
         type: str
         description: "Host on which the container will be created."
-        required: True
+        required: true
+...

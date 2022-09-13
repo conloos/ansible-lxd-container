@@ -1,9 +1,5 @@
 ---
-- name: start Cloudinit
-  ansible.builtin.include_role:
-    name: cloud-init
-
-- name: create container
+- name: Create container
   lxd_container:
     name: "{{ item }}"
     state: started
@@ -14,11 +10,11 @@
       protocol: simplestreams
       alias: "{{ lxd_cloudimage_alias }}"
     profiles: "{{ lxd_cloudimage_profiles }}"
-    wait_for_ipv4_addresses: True
+    wait_for_ipv4_addresses: true
     # The cloud-init role creates a nested-dict() for the preconfiguration of the container (see role:cloud-init).
     # To extend this dict() the ansible-combine() must be used.
-    # I suggest to use additional_container_config_values{} in the vars section to store additional paremeters. 
-    config: "{{ cloudinit_config | combine( additional_container_config_values | default({}) ) }}"
+    # I suggest to use additional_container_config_values{} in the vars section to store additional paremeters.
+    config: "{{ cloudinit_config | combine(additional_container_config_values | default({})) }}"
   register: state
   with_items:
     - "{{ cloudinit_fqdn.split('.')[0] }}"
